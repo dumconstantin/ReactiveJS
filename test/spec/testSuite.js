@@ -1,8 +1,8 @@
 describe('Object registration and validation tests', function() {
 	it('Unique ID validation', function() {
-		var object = {};
-		sync(object);
-		expect(object.uniqueId).not.toBe(undefined);
+		var object1 = {};
+		sync(object1);
+		expect(object1.uniqueSyncId).not.toBe(undefined);
 	});
 });
 
