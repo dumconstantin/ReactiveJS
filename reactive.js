@@ -100,8 +100,18 @@ var sync = (function () {
 
 	// Start the linking process.
 	chain.link = function () {
-		this.__proto__.action = 'link';
-		this.__proto__.additional = Array.prototype.slice.call(arguments);
+		Object.defineProperty(this, 'action', {
+			value: 'link',
+			enumerable: false,
+			writable: false,
+			configurable: false
+		});
+		Object.defineProperty(this, 'additional', {
+			value: Array.prototype.slice.call(arguments),
+			enumerable: false,
+			writable: false,
+			configurable: false
+		});
 		return this;
 	};
 
@@ -129,9 +139,14 @@ var sync = (function () {
 		console.log(this);
 	};
 
+	/**
+	 * Return an interface to the world.
+	 * @param obj object, To be registered by sync.
+	 */
 	return function (obj) {
 		var i,
 			id;
+
 		// If the object is registered then return.
 		if (true === isRegistered(obj)) {
 			console.warn('[SYNC]: Object has been registered.');
@@ -147,9 +162,15 @@ var sync = (function () {
 		// Generate a new id.
 		id = newId();
 		// Mark the object with an id.
-		obj.__proto__.uniqueId = id;
+		Object.defineProperty(obj, 'uniqueId', {
+			value: id,
+			enumerable: false,
+			writable: false,
+			configurable: false
+		});
 		// Store the object through reference.
 		objects[id] = obj;
+
 
 		// Start augmenting the object.
 		for (i in chain) {
@@ -157,7 +178,12 @@ var sync = (function () {
 				if (true === obj.hasOwnProperty(i)) {
 					console.warn('[SYNC]: Object has property ' + i + ' and should not be overwritten.');
 				} else {
-					obj.__proto__[i] = chain[i];
+					Object.defineProperty(obj, i, {
+						value: chain[i],
+						enumerable: false,
+						writable: false,
+						configurable: false
+					});
 				}
 			}
 		}
