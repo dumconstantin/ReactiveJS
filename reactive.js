@@ -10,7 +10,7 @@
  *
  * ------------------------------------------------
  * author:  Constantin Dumitrescu
- * version: 0.0.1
+ * version: 0.1.0
  * url:  https://github.com/daslocer/ReactiveJS
  */
 
@@ -84,7 +84,6 @@ var sync = (function () {
 	function link(obj, target, property) {
 		if (false === (true === target.hasOwnProperty(property) && true === isSynchronizable(target, property))) {
 			console.warn('[SYNC]: Property "' + property + '" does not exist in target object.');
-			console.log(target);
 			console.log('[SYNC]: finish output.');
 		} else {
 			Object.defineProperty(obj, property, {
@@ -106,7 +105,7 @@ var sync = (function () {
 		return this;
 	};
 
-	// Link to this object.
+	// Link to the target object.
 	chain.to = function (target) {
 		var i;
 		// If additional is empty then link all properties.
@@ -149,7 +148,7 @@ var sync = (function () {
 		id = newId();
 		// Mark the object with an id.
 		obj.__proto__.uniqueId = id;
-		// Store the object thru reference.
+		// Store the object through reference.
 		objects[id] = obj;
 
 		// Start augmenting the object.
@@ -162,5 +161,6 @@ var sync = (function () {
 				}
 			}
 		}
+		return obj;
 	};
 }());
