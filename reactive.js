@@ -41,7 +41,7 @@ var sync = (function () {
 	 * @param obj object, The object to be tested.
 	 */
 	function isRegistered(obj) {
-		if (true === obj.hasOwnProperty('uniqueId') && true === objects.hasOwnProperty(obj.uniqueId)) {
+		if (true === obj.hasOwnProperty('uniqueSyncId') && true === objects.hasOwnProperty(obj.uniqueSyncId)) {
 			return true;
 		} else {
 			return false;
@@ -98,6 +98,24 @@ var sync = (function () {
 		}
 	}
 
+	/**
+	 * Register a new object.
+	 */
+	function register(obj) {
+		var id = newId();
+		// Mark the object with an id.
+		Object.defineProperty(obj, 'uniqueSyncId', {
+			value: id,
+			enumerable: false,
+			writable: false,
+			configurable: false
+		});
+		// Store the object through reference.
+		objects[id] = obj;
+	}
+
+
+
 	// Start the linking process.
 	chain.link = function () {
 		Object.defineProperty(this, 'action', {
@@ -117,18 +135,20 @@ var sync = (function () {
 
 	// Link to the target object.
 	chain.to = function (target) {
-		var i;
+		var i,
+			obj = objects[this.uniqueSyncId];
+
 		// If additional is empty then link all properties.
 		// Else link only the specified properties.
 		if (0 === this.additional.length) {
-			for (i in this) {
-				if (true === this.hasOwnProperty(i)) {
-					link(this, target, i);
+			for (i in obj) {
+				if (true === obj.hasOwnProperty(i)) {
+					link(obj, target, i);
 				}
 			}
 		} else {
 			for (i = 0; i < this.additional.length; i += 1) {
-				link(this, target, this.additional[i]);
+				link(obj, target, this.additional[i]);
 			}
 		}
 	}
@@ -145,48 +165,30 @@ var sync = (function () {
 	 */
 	return function (obj) {
 		var i,
-			id;
+			id,
+			newChain;
 
-		// If the object is registered then return.
-		if (true === isRegistered(obj)) {
-			console.warn('[SYNC]: Object has been registered.');
-			return;
+		// Register the object if it's not registered.
+		if (false === isRegistered(obj)) {
+
+			// If the object cannot be registered then return.
+			if (false === canRegister(obj)) {
+				console.warn('[SYNC]: Object cannot be registered.');
+				return;
+			}
+
+			register(obj);
 		}
 
-		// If the object cannot be registered then return.
-		if (false === canRegister(obj)) {
-			console.warn('[SYNC]: Object cannot be registered.');
-			return;
-		}
-
-		// Generate a new id.
-		id = newId();
-		// Mark the object with an id.
-		Object.defineProperty(obj, 'uniqueId', {
-			value: id,
+		// Create a new chain and add the unique id of the object in order to recognize it later.
+		newChain = Object.create(chain);
+		Object.defineProperty(newChain, 'uniqueSyncId', {
+			value: obj.uniqueSyncId,
 			enumerable: false,
 			writable: false,
 			configurable: false
 		});
-		// Store the object through reference.
-		objects[id] = obj;
 
-
-		// Start augmenting the object.
-		for (i in chain) {
-			if (true === chain.hasOwnProperty(i)) {
-				if (true === obj.hasOwnProperty(i)) {
-					console.warn('[SYNC]: Object has property ' + i + ' and should not be overwritten.');
-				} else {
-					Object.defineProperty(obj, i, {
-						value: chain[i],
-						enumerable: false,
-						writable: false,
-						configurable: false
-					});
-				}
-			}
-		}
-		return obj;
+		return newChain;
 	};
 }());
