@@ -5,67 +5,6 @@
 		<script src="reactive.js"></script>
 	</head>
 <body>
-
-<script>
-	function show(name, obj) {
-		var i,
-			newObj = {};
-		for (i in obj) {
-			if (true === obj.hasOwnProperty(i)) {
-				newObj[i] = obj[i];
-			}
-		}
-		console.log(name + ' is:');
-		console.log(newObj);
-	}
-
-	var trend = {
-		hair: 'green',
-		nails: 'blue',
-		lipstick: 'red'
-	};
-
-	var ana = {
-		hair: 'brunnete',
-		nails: 'white',
-		lipstick: 'pink'
-	};
-
-	var maria = {
-		hair: 'blonde',
-		nails: 'yellow',
-		lipstick: 'black'
-	};
-
-	var echo = {
-		hair: 'yuuhuu',
-		nails: 'red'
-	};
-
-	sync(ana);
-	sync(maria);
-	sync(echo);
-
-	ana.link('hair', 'nails', 'lipstick').to(trend);
-	maria.link().to(trend);
-
-	echo.link('nails').to(ana);
-
-	show('Ana', ana);
-	show('Maria', maria);
-
-	// Set new trend.
-	trend.hair = 'blue';
-	trend.nails = 'pink';
-	trend.lipstick = 'violet';
-
-	show('New trend', trend);
-
-	show('Ana', ana);
-	show('Maria', maria);
-
-	show('Echo', echo);
-</script>
-
+	<p>Example suites of what ReactiveJS can do.</p>
 </body>
 </html>
