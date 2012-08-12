@@ -1,12 +1,19 @@
 /**
- * Library that augments objects and extends their native behaviour by
- * syncronising to other objects.
- * While this should be done through common prototype this sync happens
- * at object level instead of prototype and where two objects can have 
- * different prototypes.
- * @return function, The sync register function.
- * @param obj object, The object needed for augmentation.
+ * reactive.js
+ *
+ * reactive.js provides syncronization between public and private objects thus bringing
+ * reactive programming to JavaScript.
+ *
+ * Copyright 2012 Constantin Dumitrescu (@daslocer)
+ *
+ * Released under the MIT and GPL Licenses.
+ *
+ * ------------------------------------------------
+ * author:  Constantin Dumitrescu
+ * version: 0.0.1
+ * url:  https://github.com/daslocer/ReactiveJS
  */
+
 var sync = (function () {		
 	var 
 		// Store object references using a unique ID to link to eachother.
