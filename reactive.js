@@ -30,8 +30,7 @@ var sync = (function () {
 				return 'object-' + id;
 			};
 		}()),
-		// Stores methods that will be placed in the registered object.
-		augmentTemplate = {},
+		names = {},
 		// Define the chain of command.
 		chain = {};
 
@@ -100,8 +99,10 @@ var sync = (function () {
 
 	/**
 	 * Register a new object.
+	 * @param obj object, The registering object.
+	 * @param name string optional, The name that will reference to this object.
 	 */
-	function register(obj) {
+	function register(obj, name) {
 		var id = newId();
 		// Mark the object with an id.
 		Object.defineProperty(obj, 'uniqueSyncId', {
@@ -112,6 +113,8 @@ var sync = (function () {
 		});
 		// Store the object through reference.
 		objects[id] = obj;
+		// Remember the name of this object.
+		names[name] = id;
 	}
 
 
@@ -138,6 +141,17 @@ var sync = (function () {
 		var i,
 			obj = objects[this.uniqueSyncId];
 
+		// String will yeild a search for a name, if this is unsuccesfull then the operation returns.
+		if ('string' === typeof target) {
+			if (undefined === names[target]) {
+				console.warn('[SYNC]: Name does not exist. Syncronization aborted.');
+				return;
+			}
+
+			// Names[target] will give the id required to identify the object.
+			target = objects[names[target]];
+		}
+
 		// If additional is empty then link all properties.
 		// Else link only the specified properties.
 		if (0 === this.additional.length) {
@@ -162,8 +176,10 @@ var sync = (function () {
 	/**
 	 * Return an interface to the world.
 	 * @param obj object, To be registered by sync.
+	 * @param name string optional, Add a unique name of this object in order to 
+	 * reference it later in other scripts.
 	 */
-	return function (obj) {
+	return function (obj, name) {
 		var i,
 			id,
 			newChain;
@@ -177,7 +193,13 @@ var sync = (function () {
 				return;
 			}
 
-			register(obj);
+			// If the name is not valid then return.
+			if (undefined !== name && 'string' !== typeof name) {
+				console.warn('[SYNC]: The name for this object must be a string.');
+				return;
+			}
+
+			register(obj, name);
 		}
 
 		// Create a new chain and add the unique id of the object in order to recognize it later.
