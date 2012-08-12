@@ -1,4 +1,4 @@
 ReactiveJS
 ==========
 
-A small library for reactive programming in JavaScript
+<p>ReactiveJS provides developers a reactive programming engine that makes it easy to syncronize very complex and inter-dependent modules in large applications.</p>
