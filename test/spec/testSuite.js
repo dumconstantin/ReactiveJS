@@ -46,3 +46,18 @@ describe('Object syncronization on value change.', function() {
 		expect(object2.foo).toBe('qux');
 	});
 });
+
+describe('Object syncronization with names.', function() {
+	it('First value change', function() {
+		var object1 = {
+				foo: 'bar'
+			},
+			object2 = {
+				foo: 'baz'
+			};
+		sync(object1, 'first-object');
+		sync(object2).link().to('first-object');
+		object1.foo = 'qux';
+		expect(object2.foo).toBe('qux');
+	});
+});
